@@ -1,4 +1,6 @@
 ﻿@model ProjektSWR.Models.ProfileModel
+
+
 @{
     ViewBag.Title = "Profile";
 }
@@ -33,4 +35,94 @@
 <div id="mainbeam">
     <h3>Kalendarz</h3>
 
+</div>
+
+
+
+<script>
+    var eventsList= [
+@foreach (var item in ViewBag.EventsList) {
+    @("{")
+        @:id: "@item.ID",
+        @:title: "@item.Title", //You will need ID here to identify object for EDIT it must be taken from DB
+        @:start: "@item.StartDate",
+        @:end: "@item.EndDate",
+        @:location: "@item.Location",
+        @:details: "@item.Details"
+    @("},")
+}
+        ]
+</script>
+
+
+<link href='~/Content/fullcalendar.min.css' rel='stylesheet' />
+<link href='~/Content/fullcalendar.print.css' rel='stylesheet' media='print' />
+<script src='~/Scripts/moment.js'></script>
+<script src='~/Scripts/Calendar/fullcalendar.min.js'></script>
+<script src="~/Scripts/Calendar/calendar_home_no_admin.js"></script>
+<script src="~/Scripts/locale-all.js"></script>
+<div id='calendar'></div>
+
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Wydarzenie</h4>
+            </div>
+            <div class="modal-body">
+                @Html.AntiForgeryToken()
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-2" for="Title">Tytuł</label>
+                        <div class="col-md-10">
+                            <input name="title" class="form-control text-box single-line" data-val="true" data-val-required="Pole 'tytuł' jest wymagane." id="Title" name="Title" type="text" value="" />
+                            <span class="field-validation-valid text-danger" data-valmsg-for="Title" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2" for="StartDate">Data rozpoczęcia</label>
+                        <div class="col-md-10">
+                            <input name="startDate" class="form-control text-box single-line" data-val="true" data-val-date="The field StartDate must be a date." data-val-required="Pole 'Data rozpoczęcia' jest wymagane." id="StartDate" name="StartDate" type="datetime" value="" />
+                            <span class="field-validation-valid text-danger" data-valmsg-for="StartDate" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2" for="EndDate">Data zakończenia</label>
+                        <div class="col-md-10">
+                            <input name="endDate" class="form-control text-box single-line" data-val="true" data-val-date="The field EndDate must be a date." data-val-required="Pole 'Data zakończenia' jest wymagane." id="EndDate" name="EndDate" type="datetime" value="" />
+                            <span class="field-validation-valid text-danger" data-valmsg-for="EndDate" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2" for="Location">Lokalizacja</label>
+                        <div class="col-md-10">
+                            <input name="location" class="form-control text-box single-line" id="Location" type="text" value="" />
+                            <span class="field-validation-valid text-danger" data-valmsg-for="Location" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2" for="Details">Szczegóły</label>
+                        <div class="col-md-10">
+                            <input name="details" class="form-control text-box single-line" id="Details" type="text" value="" />
+                            <span class="field-validation-valid text-danger" data-valmsg-for="Details" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-left hidden delete-btn" data-dismiss="modal">Usuń<span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+                <button type="button" name="saveChanges" class="btn btn-primary" data-dismiss="modal">Zapisz</button>
+            </div>
+        </div>
+    </div>
 </div>

@@ -16,13 +16,43 @@ namespace ProjektSWR.Controllers
     public class ProfileController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private PrivateEvent currentPEvent = new PrivateEvent();
+
+        public PrivateEvent getCurrentPrivateEvent()
+        {
+            ApplicationUser currentUser = db.Users.Find(User.Identity.GetUserId());
+
+            PrivateEvent currentPrivateEvent = new PrivateEvent();
+            bool found = false;
+            foreach (PrivateEvent myEvent in db.PrivateEvents)
+            {
+                if (myEvent.UserID == currentUser)
+                {
+                    currentPrivateEvent = myEvent;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                PrivateEvent newPrivateList = new PrivateEvent();
+                newPrivateList.UserID = currentUser;
+                newPrivateList.AdminID = db.Admins.FirstOrDefault();
+                db.PrivateEvents.Add(newPrivateList);
+                db.SaveChanges();
+                currentPrivateEvent = newPrivateList;
+            }
+
+            return currentPrivateEvent;
+        }
 
         // GET: Profile
         public ActionResult Index()
         {
             var db = HttpContext.GetOwinContext().Get<ApplicationDbContext>();
             ViewBag.Message = "Panel użytkownika";
-
+            
             var userId = User.Identity.GetUserId();
             var m = new ProfileModel
             {
@@ -36,6 +66,8 @@ namespace ProjektSWR.Controllers
                 PhoneNumber = db.Users.Find(userId).PhoneNumber,
                 CathedralName = db.Cathedrals.Find(1).Department,
             };
+
+            ViewBag.EventsList = this.getCurrentPrivateEvent().Events.ToList();
 
             return View(m);
         }
